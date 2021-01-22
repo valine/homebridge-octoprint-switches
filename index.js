@@ -45,7 +45,7 @@ OctoprintAccessory.prototype.setOnCharacteristicBedHandler = function(value, cal
   var temp = 0;
 
 	if (value) {
-		temp = 115;
+		temp = 112;
 	}
 
 	var options = {
