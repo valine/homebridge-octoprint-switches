@@ -81,7 +81,7 @@ OctoprintAccessory.prototype.setOnCharacteristicRetractHandler = function(value,
 		method: 'POST',
 		uri: this.server + '/api/printer/tool',
 		headers: { "X-Api-Key": this.apiKey },
-		body: { "command": "retract", "amount" : 50},
+		body: { "command": "extrude", "amount" : -50},
 		json: true
 	};
 
