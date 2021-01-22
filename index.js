@@ -37,8 +37,62 @@ function OctoprintAccessory(log, config, api) {
     .getCharacteristic(Characteristic.On)
     .on('set', this.setOnCharacteristicConnectionHandler.bind(this))
     .on('get', this.getOnCharacteristicConnectionHandler.bind(this));
+    
+    
+  this.serviceExtrude = new Service.Switch("Extrude", "service3");
+
+  this.serviceExtrude
+    .getCharacteristic(Characteristic.On)
+    .on('set', this.setOnCharacteristicExtrudeHandler.bind(this))
+    .on('get', this.getOnCharacteristicExtrudeHandler.bind(this));
+    
+  this.serviceRetract = new Service.Switch("Retract", "service4");
+
+  this.serviceRetract
+    .getCharacteristic(Characteristic.On)
+    .on('set', this.setOnCharacteristicRetractHandler.bind(this))
+    .on('get', this.getOnCharacteristicRetractHandler.bind(this));
+      
 };
 
+OctoprintAccessory.prototype.setOnCharacteristicExtrudeHandler = function(value, callback) {
+  this.log(`calling setOnCharacteristicHandler`, value)
+
+	var options = {
+		method: 'POST',
+		uri: this.server + '/api/printer/tool',
+		headers: { "X-Api-Key": this.apiKey },
+		body: { "command": "extrude", "amount" : 50},
+		json: true
+	};
+
+	rp(options).then(function() {
+		console.log('Successfully extruded');
+		callback(null);
+	}).catch(function(error) {
+		console.log('==== ERROR IN EXTRUDE ====');
+		callback(error);
+	});
+};
+
+OctoprintAccessory.prototype.setOnCharacteristicRetractHandler = function(value, callback) {
+  this.log(`calling setOnCharacteristicHandler`, value)
+  var options = {
+		method: 'POST',
+		uri: this.server + '/api/printer/tool',
+		headers: { "X-Api-Key": this.apiKey },
+		body: { "command": "retract", "amount" : 50},
+		json: true
+	};
+
+	rp(options).then(function() {
+		console.log('Successfully retracted');
+		callback(null);
+	}).catch(function(error) {
+		console.log('==== ERROR IN RETRACT ====');
+		callback(error);
+	});
+};
 
 OctoprintAccessory.prototype.setOnCharacteristicBedHandler = function(value, callback) {
   this.log(`calling setOnCharacteristicHandler`, value)
@@ -68,6 +122,16 @@ OctoprintAccessory.prototype.setOnCharacteristicBedHandler = function(value, cal
 };
 
 OctoprintAccessory.prototype.getOnCharacteristicBedHandler = function(callback) {
+  this.log(`calling getOnCharacteristicHandler`, this.isOn)
+  callback(null, this.isOn)
+}
+
+OctoprintAccessory.prototype.getOnCharacteristicExtrudeHandler = function(callback) {
+  this.log(`calling getOnCharacteristicHandler`, this.isOn)
+  callback(null, this.isOn)
+}
+
+OctoprintAccessory.prototype.getOnCharacteristicRetractHandler = function(callback) {
   this.log(`calling getOnCharacteristicHandler`, this.isOn)
   callback(null, this.isOn)
 }
@@ -138,7 +202,7 @@ OctoprintAccessory.prototype.getOnCharacteristicHandler = function(callback) {
 }
 
 OctoprintAccessory.prototype.getServices = function() {
-  return [this.service, this.serviceBed, this.serviceConnect];
+  return [this.service, this.serviceBed, this.serviceConnect, this.serviceExtrude, this.serviceRetract];
 };
 
 
