@@ -141,7 +141,7 @@ OctoprintAccessory.prototype.setOnCharacteristicHandler = function(value, callba
   var temp = 0;
 
 	if (value) {
-		temp = 210;
+		temp = 245;
 	}
 
 	var options = {
